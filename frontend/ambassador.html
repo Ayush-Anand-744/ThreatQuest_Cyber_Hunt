@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ThreatQuest Cyber Hunt</title>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-CHN47PTB76"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-CHN47PTB76');</script>
+<style>
+:root{--bg:#07070f;--card:#12121f;--card2:#1a1a2b;--line:#262640;--txt:#eef0fb;--mut:#9aa0bb;
+  --acc:#7c5cff;--acc2:#22d3a6;--gold:#f5b301;--danger:#ef4444}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:radial-gradient(1200px 600px at 80% -10%,rgba(124,92,255,.18),transparent),var(--bg);color:var(--txt);min-height:100vh}
+a{color:var(--acc)}
+.wrap{max-width:1000px;margin:0 auto;padding:24px 18px 60px}
+header{display:flex;align-items:center;gap:10px;padding:18px;border-bottom:1px solid var(--line)}
+header h1{font-size:1.1rem;margin:0;font-weight:800}
+.brand{font-weight:900;letter-spacing:.3px}.grad{background:linear-gradient(90deg,#7c5cff,#22d3a6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.spacer{flex:1}
+.btn{border:0;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;background:var(--acc);color:#fff;font-size:.9rem}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--txt)}
+.btn.gold{background:linear-gradient(90deg,#f5b301,#ff8a3d);color:#1a1206}
+.btn.green{background:var(--acc2);color:#04211a}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.card{background:linear-gradient(160deg,var(--card),#0e0e1a);border:1px solid var(--line);border-radius:18px;padding:22px;margin-top:16px;box-shadow:0 10px 34px rgba(0,0,0,.22)}
+.muted{color:var(--mut)}
+input,select{background:#0c0c17;border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:11px 13px;width:100%;font-size:.95rem}
+input:focus,select:focus{border-color:var(--acc);outline:none}
+label{font-size:.8rem;color:var(--mut);display:block;margin:10px 0 5px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.kpi{position:relative;background:linear-gradient(160deg,#1c1c2e,#15151f);border:1px solid var(--line);border-radius:16px;padding:18px 14px;text-align:center;overflow:hidden;transition:.2s}
+.kpi:hover{transform:translateY(-3px);border-color:rgba(124,92,255,.4)}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+.kpi b{font-size:2rem;display:block;font-weight:900;line-height:1;background:linear-gradient(90deg,#fff,#cfc8ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.kpi span{color:var(--mut);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-top:6px;display:block}
+.meter{height:16px;background:#0c0c17;border-radius:99px;overflow:hidden;border:1px solid var(--line);margin:12px 0}
+.meter>i{display:block;height:100%;background:linear-gradient(90deg,#7c5cff,#22d3a6,#f5b301);width:0;transition:width .7s cubic-bezier(.22,1,.36,1)}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:8px}
+.tier{background:linear-gradient(160deg,#1a1a2b,#13131d);border:1px solid var(--line);border-radius:15px;padding:17px;position:relative;transition:.2s}
+.tier:hover{transform:translateY(-2px)}
+.tier.on{border-color:var(--acc2);box-shadow:0 0 0 1px rgba(34,211,166,.3),0 10px 28px rgba(34,211,166,.1)}
+.tier h4{margin:0 0 4px}.tier .req{font-size:.8rem;color:var(--mut)}
+.tier .lockst{font-size:.78rem;margin-top:8px;font-weight:700}
+.badge{display:inline-block;padding:3px 9px;border-radius:99px;font-size:.7rem;font-weight:800}
+.badge.on{background:rgba(34,211,166,.16);color:var(--acc2)}.badge.off{background:#26263f;color:var(--mut)}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:600;font-size:.74rem;text-transform:uppercase;letter-spacing:.04em}
+tbody tr{transition:.12s}tbody tr:hover{background:rgba(255,255,255,.035)}
+.copybox{display:flex;gap:8px;align-items:center;background:#0c0c17;border:1px dashed var(--line);border-radius:10px;padding:10px 12px;font-family:monospace;font-size:.85rem;word-break:break-all}
+.hide{display:none}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;place-items:center;padding:18px;z-index:50;overflow:auto}
+.modal.show{display:grid}
+.modal-inner{max-width:760px;width:100%}
+/* certificate */
+.cert{background:#fffdf7;color:#1a1530;border-radius:14px;padding:34px;position:relative;border:10px solid #1a1530;font-family:Georgia,serif}
+.cert .frame{border:2px solid var(--gold);border-radius:8px;padding:26px;text-align:center}
+.cert .seal{position:absolute;right:30px;bottom:26px;width:84px;height:84px}
+.cert h2{font-size:1.7rem;margin:6px 0;letter-spacing:1px;color:#1a1530}
+.cert .who{font-size:2.1rem;font-weight:900;margin:14px 0 6px;color:#5b3df5;font-family:Georgia,serif}
+.cert .tierline{font-size:1.15rem;color:#1a1530;margin:6px 0}
+.cert .desc{color:#444;max-width:520px;margin:12px auto;font-size:.95rem;line-height:1.5}
+.cert .foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;font-size:.78rem;color:#555}
+.cert .sig{font-family:'Brush Script MT',cursive;font-size:1.4rem;color:#1a1530;border-top:1px solid #999;padding-top:4px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a2b;border:1px solid var(--line);color:#fff;padding:11px 18px;border-radius:10px;opacity:0;transition:.3s;z-index:80}
+.toast.show{opacity:1}
+@media(max-width:560px){.kpis{grid-template-columns:1fr 1fr}.cert .who{font-size:1.5rem}}
+html{-webkit-text-size-adjust:100%}body{overflow-x:hidden}
+img,svg{max-width:100%}*{-webkit-tap-highlight-color:transparent}
+@media(max-width:560px){
+  input,select,textarea{font-size:16px}    /* no iOS zoom-on-focus */
+  .wrap{padding:16px 14px 50px}
+  header.wrap{padding:12px 14px;flex-wrap:wrap}
+  .btn{min-height:42px}
+  .kpis{gap:8px}.kpi b{font-size:1.5rem}
+  table{font-size:.82rem}th,td{padding:7px 6px}
+  .copybox{font-size:.75rem}
+  .modal{padding:10px}
+}
+</style>  <link rel="stylesheet" href="assets/ayush-premium.css">
+</head><body>
+<header class="wrap" style="max-width:1000px;border-bottom:1px solid var(--line);margin:0 auto">
+  <span class="brand">Hack<span class="grad">Hunt</span></span>
+  <span class="muted" style="font-size:.85rem">· Campus Ambassador</span>
+  <span class="spacer"></span>
+  <a class="btn ghost" href="/">← Site</a>
+  <button class="btn ghost hide" id="logoutBtn">Logout</button>
+</header>
+
+<div class="wrap">
+  <!-- VERIFY VIEW (?verify=ID) -->
+  <div id="verifyView" class="hide">
+    <div class="card" style="text-align:center">
+      <h2 id="vTitle">Verifying certificate…</h2>
+      <div id="vBody" class="muted"></div>
+      <a class="btn" href="/ambassador.html" style="margin-top:14px;display:inline-block;text-decoration:none">Become an Ambassador</a>
+    </div>
+  </div>
+
+  <!-- AUTH VIEW -->
+  <div id="authView">
+    <div class="card">
+      <h2 style="margin-top:0">Campus Ambassador Program 🎓</h2>
+      <p class="muted">Spread ThreatQuest Cyber Hunt at your college, bring sign-ups with your referral link, and
+      unlock <b>verifiable certificates</b> + LinkedIn titles. No fees, ever.</p>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="tabJoin">Become an Ambassador</button>
+        <button class="btn ghost" id="tabLogin">I already have a code</button>
+      </div>
+
+      <div id="joinForm" style="margin-top:14px">
+        <label>Full name</label><input id="jName" placeholder="Your name">
+        <label>Email</label><input id="jEmail" type="email" placeholder="you@gmail.com">
+        <label>College</label><input id="jCollege" placeholder="Your college / university">
+        <button class="btn green" id="joinBtn" style="margin-top:14px">Get my referral code 🚀</button>
+        <p class="muted" id="joinMsg" style="font-size:.82rem"></p>
+      </div>
+
+      <div id="loginForm" class="hide" style="margin-top:14px">
+        <label>Your ambassador code or email</label><input id="lCode" placeholder="e.g. RAGHAV1234 or you@gmail.com">
+        <button class="btn" id="loginBtn" style="margin-top:14px">Open my dashboard</button>
+        <p class="muted" id="loginMsg" style="font-size:.82rem"></p>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0">🏆 Leaderboard</h3>
+      <div style="overflow:auto"><table id="lbTable"><thead><tr><th>#</th><th>Ambassador</th><th>College</th><th>Tier</th><th>Sign-ups</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD VIEW -->
+  <div id="dashView" class="hide">
+    <div class="card">
+      <div class="row"><h2 style="margin:0" id="dName">Welcome</h2><span class="spacer"></span>
+        <span class="badge on" id="dTier">—</span></div>
+      <p class="muted" id="dCollege" style="margin:4px 0 14px"></p>
+      <div class="kpis">
+        <div class="kpi"><b id="kCount">0</b><span>Sign-ups</span></div>
+        <div class="kpi"><b id="kRank">—</b><span>Leaderboard rank</span></div>
+        <div class="kpi"><b id="kNext">—</b><span>To next tier</span></div>
+      </div>
+      <label style="margin-top:16px">Your referral link — share this everywhere</label>
+      <div class="copybox"><span id="refLink"></span></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="copyBtn">Copy link</button>
+        <button class="btn green" id="waBtn">Share on WhatsApp</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Milestone progress</h3>
+      <div class="muted" id="meterLabel" style="font-size:.85rem"></div>
+      <div class="meter"><i id="meterFill"></i></div>
+      <div class="tiers" id="tierCards"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">Students you brought (<span id="refCount">0</span>)</h3>
+      <div style="overflow:auto"><table id="refTable"><thead><tr><th>Name</th><th>College</th><th>Joined</th></tr></thead><tbody></tbody></table></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin-top:0">🏆 Leaderboard</h3>
+      <div style="overflow:auto"><table id="lbTable2"><thead><tr><th>#</th><th>Ambassador</th><th>College</th><th>Tier</th><th>Sign-ups</th></tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- CERTIFICATE MODAL -->
+<div class="modal" id="certModal"><div class="modal-inner">
+  <div id="certBox"></div>
+  <div class="row" style="justify-content:center;margin-top:14px">
+    <button class="btn green" id="dlCert">⬇ Download (PNG)</button>
+    <button class="btn" id="liCert">in Add to LinkedIn</button>
+    <button class="btn ghost" id="closeCert">Close</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const BASE=(location.protocol==="http:"||location.protocol==="https:")?"":"http://localhost:5050";
+const $=s=>document.querySelector(s);
+function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2200);}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function fmtDate(ts){try{return new Date(ts*1000).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"});}catch(e){return"";}}
+const ORIGIN=location.origin.includes("localhost")?"https://ThreatQuest Cyber Hunt.xyz":location.origin;
+let CODE=localStorage.getItem("hh_amb_code")||"";
+let STATS=null;
+
+// ---------- verify mode ----------
+const qVerify=new URLSearchParams(location.search).get("verify");
+if(qVerify){
+  $("#authView").classList.add("hide");$("#dashView").classList.add("hide");$("#verifyView").classList.remove("hide");
+  fetch(BASE+"/api/verify-cert?id="+encodeURIComponent(qVerify)).then(r=>r.json()).then(d=>{
+    if(d.ok){$("#vTitle").textContent="✅ Verified Certificate";
+      $("#vBody").innerHTML=`<p style="font-size:1.05rem;color:var(--txt)"><b>${esc(d.cert.name)}</b><br>${esc(d.cert.tier)} · ThreatQuest Cyber Hunt<br>ID: ${esc(d.cert.cert_id)} · Issued ${fmtDate(d.cert.issued)}</p>`;}
+    else{$("#vTitle").textContent="❌ Not found";$("#vBody").textContent="This certificate ID could not be verified.";}
+  }).catch(()=>{$("#vTitle").textContent="Error";});
+}
+
+// ---------- auth tabs ----------
+$("#tabJoin").onclick=()=>{$("#joinForm").classList.remove("hide");$("#loginForm").classList.add("hide");};
+$("#tabLogin").onclick=()=>{$("#loginForm").classList.remove("hide");$("#joinForm").classList.add("hide");};
+
+$("#joinBtn").onclick=async()=>{
+  const name=$("#jName").value.trim(),email=$("#jEmail").value.trim().toLowerCase(),college=$("#jCollege").value.trim();
+  if(!name||!email){$("#joinMsg").textContent="Name and email are required.";return;}
+  $("#joinMsg").textContent="Creating your code…";
+  try{
+    const r=await fetch(BASE+"/api/ambassador/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,email,college})});
+    const d=await r.json();
+    if(d.ok){CODE=d.ambassador.code;localStorage.setItem("hh_amb_code",CODE);openDash();}
+    else $("#joinMsg").textContent=d.error||"Could not register.";
+  }catch(e){$("#joinMsg").textContent="Network error.";}
+};
+$("#loginBtn").onclick=async()=>{
+  const v=$("#lCode").value.trim();if(!v){$("#loginMsg").textContent="Enter your code or email.";return;}
+  const q=v.includes("@")?("email="+encodeURIComponent(v.toLowerCase())):("code="+encodeURIComponent(v.toUpperCase()));
+  const r=await fetch(BASE+"/api/ambassador/stats?"+q);const d=await r.json();
+  if(d.ok){CODE=d.stats.code;localStorage.setItem("hh_amb_code",CODE);openDash();}
+  else $("#loginMsg").textContent="No ambassador found with that code/email.";
+};
+$("#logoutBtn").onclick=()=>{localStorage.removeItem("hh_amb_code");location.href="/ambassador.html";};
+
+// ---------- dashboard ----------
+async function openDash(){
+  const r=await fetch(BASE+"/api/ambassador/stats?code="+encodeURIComponent(CODE));
+  const d=await r.json();if(!d.ok){toast("Could not load dashboard");return;}
+  STATS=d.stats;
+  $("#authView").classList.add("hide");$("#dashView").classList.remove("hide");$("#logoutBtn").classList.remove("hide");
+  const s=STATS;
+  $("#dName").textContent="Hi, "+s.name.split(" ")[0]+" 👋";
+  $("#dCollege").textContent=(s.college||"")+" · Code: "+s.code;
+  $("#dTier").textContent=s.current_tier||"Getting started";
+  $("#kCount").textContent=s.count;
+  $("#kNext").textContent=s.next_at?((s.next_at-s.count)+" more"):"Max tier!";
+  const link=ORIGIN+"/?ref="+s.code;
+  $("#refLink").textContent=link;
+  $("#copyBtn").onclick=()=>{navigator.clipboard.writeText(link);toast("Link copied!");};
+  $("#waBtn").onclick=()=>{const msg=`Found this super useful 👇 *ThreatQuest Cyber Hunt* — saare hackathons & hiring challenges of India ek jagah. Free hai 👉 ${link}`;
+    window.open("https://wa.me/?text="+encodeURIComponent(msg),"_blank");};
+  // milestone meter
+  const tiers=s.tiers;const maxAt=tiers[tiers.length-1].at;
+  const pct=Math.min(100,Math.round(s.count/maxAt*100));
+  $("#meterFill").style.width=pct+"%";
+  $("#meterLabel").textContent=s.next_tier?`${s.count} sign-ups · ${s.next_at-s.count} more to unlock ${s.next_tier}`:"All tiers unlocked! Legend 🏆";
+  // tier cards
+  $("#tierCards").innerHTML=tiers.map(t=>`<div class="tier ${t.unlocked?'on':''}">
+    <h4>${esc(t.name)}</h4><div class="req">${t.at} sign-up${t.at>1?'s':''}</div>
+    <div class="lockst">${t.unlocked?'<span class="badge on">✓ Unlocked</span>':'<span class="badge off">🔒 Locked</span>'}</div>
+    ${t.unlocked?`<button class="btn gold" style="margin-top:10px;width:100%" data-cert="${esc(t.name)}">Get certificate</button>`:''}</div>`).join("");
+  $("#tierCards").querySelectorAll("[data-cert]").forEach(b=>b.onclick=()=>showCert(b.dataset.cert));
+  // referred list
+  $("#refCount").textContent=s.count;
+  $("#refTable tbody").innerHTML=s.referred.length?s.referred.map(u=>`<tr><td>${esc(u.name||"Student")}</td><td>${esc(u.college||"—")}</td><td class="muted">${fmtDate(u.joined)}</td></tr>`).join(""):'<tr><td colspan="3" class="muted">No sign-ups yet — share your link to get started!</td></tr>';
+  loadLeaderboard("#lbTable2");
+}
+
+// ---------- leaderboard ----------
+async function loadLeaderboard(sel){
+  try{const d=await (await fetch(BASE+"/api/leaderboard")).json();
+    const medal=["🥇","🥈","🥉"];
+    document.querySelector(sel+" tbody").innerHTML=(d.leaderboard||[]).map(r=>`<tr>
+      <td>${medal[r.rank-1]||r.rank}</td><td>${esc(r.name)}</td><td class="muted">${esc(r.college||"—")}</td>
+      <td>${esc(r.tier)}</td><td><b>${r.count}</b></td></tr>`).join("")||'<tr><td colspan="5" class="muted">No ambassadors yet.</td></tr>';
+  }catch(e){}
+}
+
+// ---------- certificate ----------
+let CURRENT_CERT=null;
+function xml(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+// Build a professional vector certificate (navy & gold, ornamental border, seal).
+function buildCertSVG(cert){
+  const name=xml(cert.name), tier=xml(cert.tier), id=xml(cert.cert_id);
+  const date=fmtDate(cert.issued);
+  // shrink very long names to fit
+  const nameSize = name.length>26 ? 44 : (name.length>18 ? 54 : 64);
+  // each tier gets its own prestige metal: Star=silver, Lead=gold, National=platinum/royal
+  const ACC={
+    "Star Ambassador":   {a1:"#dfe5ee",a2:"#9aa3b2",a3:"#6b7484"},
+    "Campus Lead":       {a1:"#e7c873",a2:"#bf9b30",a3:"#9c7a1e"},
+    "National Ambassador":{a1:"#d9c9ff",a2:"#7c5cff",a3:"#4b35b3"}
+  }[cert.tier] || {a1:"#e7c873",a2:"#bf9b30",a3:"#9c7a1e"};
+  const NAVY="#0f1c3f", GOLD=ACC.a2, GOLD2=ACC.a1, GOLDD=ACC.a3, INK="#1a2238", MUT="#5b6478", IVORY="#fcfbf7";
+  return `<svg id="certCanvasSrc" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 707" width="100%" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="${GOLD2}"/><stop offset=".5" stop-color="${GOLD}"/><stop offset="1" stop-color="${GOLDD}"/></linearGradient>
+    <radialGradient id="seal" cx="50%" cy="45%" r="60%">
+      <stop offset="0" stop-color="${GOLD2}"/><stop offset="1" stop-color="${GOLD}"/></radialGradient>
+    <linearGradient id="logoG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#12b886"/></linearGradient>
+  </defs>
+  <rect width="1000" height="707" fill="${IVORY}"/>
+  <rect x="18" y="18" width="964" height="671" fill="none" stroke="${NAVY}" stroke-width="10"/>
+  <rect x="34" y="34" width="932" height="639" fill="none" stroke="url(#gold)" stroke-width="2.5"/>
+  <!-- corner ornaments -->
+  ${[[34,34,1,1],[966,34,-1,1],[34,673,1,-1],[966,673,-1,-1]].map(([x,y,sx,sy])=>
+    `<path d="M${x} ${y} l${40*sx} 0 M${x} ${y} l0 ${40*sy} M${x+12*sx} ${y+12*sy} l${20*sx} 0 M${x+12*sx} ${y+12*sy} l0 ${20*sy}" stroke="url(#gold)" stroke-width="2" fill="none"/>`).join("")}
+  <!-- watermark -->
+  <text x="500" y="430" text-anchor="middle" font-size="150" fill="${NAVY}" opacity="0.04" font-weight="bold" letter-spacing="6">HACKHUNT</text>
+  <!-- logo -->
+  <g transform="translate(470,70) scale(1.0)">
+    <path d="M30 0 54 9v17c0 15-10 26-24 30C16 52 6 41 6 26V9z" fill="url(#logoG)"/>
+    <path d="M30 14c5.6 3.7 8.4 9.3 8.4 16l-4.7-2.8L30 33l-3.7-5.6L21.6 30c0-6.7 2.8-12.3 8.4-16z" fill="#fff"/>
+    <circle cx="30" cy="26" r="2.6" fill="#5b3df5"/></g>
+  <text x="500" y="150" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="15" letter-spacing="8" fill="${NAVY}" font-weight="700">H A C K H U N T</text>
+  <text x="500" y="172" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="9.5" letter-spacing="3" fill="${MUT}">ALL HACKATHONS OF INDIA, ONE PLACE</text>
+  <line x1="380" y1="188" x2="620" y2="188" stroke="url(#gold)" stroke-width="1.5"/>
+  <!-- title -->
+  <text x="500" y="248" text-anchor="middle" font-size="40" letter-spacing="6" fill="${INK}">CERTIFICATE</text>
+  <text x="500" y="278" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" letter-spacing="9" fill="${GOLD}">OF ACHIEVEMENT</text>
+  <text x="500" y="330" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="13" fill="${MUT}">This certificate is proudly presented to</text>
+  <!-- recipient -->
+  <text x="500" y="392" text-anchor="middle" font-size="${nameSize}" font-style="italic" fill="${NAVY}">${name}</text>
+  <line x1="300" y1="410" x2="700" y2="410" stroke="url(#gold)" stroke-width="1.2"/>
+  <text x="500" y="446" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="14" fill="${MUT}">in recognition of outstanding contribution as a</text>
+  <text x="500" y="480" text-anchor="middle" font-size="27" font-weight="bold" fill="${GOLD}">${tier}</text>
+  <text x="500" y="520" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="${MUT}">for championing ThreatQuest Cyber Hunt across their campus and empowering students</text>
+  <text x="500" y="539" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="12.5" fill="${MUT}">across India to discover hackathons and opportunities.</text>
+  <!-- seal -->
+  <g transform="translate(210,592)">
+    <path d="M-14 22 L-8 54 L0 46 L8 54 L14 22 Z" fill="${GOLD}"/>
+    <circle r="40" fill="url(#seal)" stroke="${GOLDD}" stroke-width="1.5"/>
+    <circle r="32" fill="none" stroke="#fff" stroke-width="1" opacity=".7"/>
+    <text y="-8" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="9" font-weight="800" fill="${NAVY}">HACKHUNT</text>
+    <text y="4" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="7" fill="${NAVY}">CAMPUS</text>
+    <text y="14" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="7" fill="${NAVY}">AMBASSADOR</text>
+    <text y="27" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="6.5" fill="#7a5e12">★ OFFICIAL ★</text>
+  </g>
+  <!-- signature -->
+  <g transform="translate(700,600)">
+    <text x="90" y="0" text-anchor="middle" font-size="26" font-style="italic" fill="${INK}">Team ThreatQuest Cyber Hunt</text>
+    <line x1="0" y1="12" x2="180" y2="12" stroke="${MUT}" stroke-width="1"/>
+    <text x="90" y="28" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" fill="${MUT}">Team ThreatQuest Cyber Hunt · ThreatQuest Cyber Hunt.xyz</text>
+  </g>
+  <!-- footer: date + id + verify -->
+  <text x="500" y="640" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="11" fill="${MUT}">Issued on ${date}  ·  Certificate ID: ${id}</text>
+  <text x="500" y="657" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="10" fill="${GOLD}">Verify at ThreatQuest Cyber Hunt.xyz/ambassador.html?verify=${id}</text>
+  </svg>`;
+}
+
+async function showCert(tier){
+  const r=await fetch(BASE+"/api/ambassador/cert",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({code:CODE,tier})});
+  const d=await r.json();
+  if(!d.ok){toast(d.error||"Not unlocked yet");return;}
+  CURRENT_CERT=d.cert;
+  $("#certBox").innerHTML=buildCertSVG(d.cert);
+  $("#certModal").classList.add("show");
+}
+$("#closeCert").onclick=()=>$("#certModal").classList.remove("show");
+$("#dlCert").onclick=()=>downloadCert();
+$("#liCert").onclick=()=>{
+  if(!CURRENT_CERT)return;
+  const d=CURRENT_CERT,now=new Date();
+  const u="https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME"
+    +"&name="+encodeURIComponent("ThreatQuest Cyber Hunt "+d.tier)
+    +"&organizationName="+encodeURIComponent("ThreatQuest Cyber Hunt")
+    +"&issueYear="+now.getFullYear()+"&issueMonth="+(now.getMonth()+1)
+    +"&certId="+encodeURIComponent(d.cert_id)
+    +"&certUrl="+encodeURIComponent(ORIGIN+"/ambassador.html?verify="+d.cert_id);
+  window.open(u,"_blank");
+};
+// rasterize the pure-SVG certificate to a high-res PNG (no external images -> no taint)
+function downloadCert(){
+  const node=$("#certCanvasSrc");if(!node){toast("Open a certificate first");return;}
+  const clone=node.cloneNode(true);clone.setAttribute("width","2000");clone.setAttribute("height","1414");
+  const svgStr=new XMLSerializer().serializeToString(clone);
+  const img=new Image();
+  img.onload=()=>{const c=document.createElement("canvas");c.width=2000;c.height=1414;const ctx=c.getContext("2d");
+    ctx.fillStyle="#fcfbf7";ctx.fillRect(0,0,2000,1414);ctx.drawImage(img,0,0,2000,1414);
+    try{const a=document.createElement("a");a.download="ThreatQuest Cyber Hunt-Certificate-"+(CURRENT_CERT?CURRENT_CERT.cert_id:"cert")+".png";a.href=c.toDataURL("image/png");a.click();toast("Downloaded!");}
+    catch(e){toast("Use a screenshot if download is blocked");}};
+  img.onerror=()=>toast("Use a screenshot to save");
+  img.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(svgStr);
+}
+
+// init
+if(!qVerify){
+  loadLeaderboard("#lbTable");
+  if(CODE)openDash();
+}
+</script>
+  <script src="assets/ayush-premium.js"></script>
+</body></html>

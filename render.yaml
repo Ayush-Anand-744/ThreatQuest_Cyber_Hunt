@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: threatquest-cyber-hunt
+    env: docker
+    plan: starter
+    autoDeploy: true
+    disk:
+      name: threatquest-data
+      mountPath: /app/backend/instance
+      sizeGB: 1
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        sync: false

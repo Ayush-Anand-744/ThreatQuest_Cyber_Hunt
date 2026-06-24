@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ThreatQuest Cyber Hunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#07070f;--card:rgba(255,255,255,.05);--brd:rgba(255,255,255,.12);--txt:#f3f4fb;--muted:#9aa0bb;
+  --accent:#7c5cff;--accent2:#19e3c7;--danger:#ff4d6d;--ok:#34d36b;--warn:#ffb13b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:radial-gradient(circle at 20% 0,rgba(124,92,255,.18),transparent 50%),var(--bg);
+  color:var(--txt);min-height:100vh}
+h1,h2,h3{font-family:Sora}
+a{color:var(--accent2)}
+.wrap{max-width:1200px;margin:0 auto;padding:20px}
+/* login */
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.lcard{background:var(--card);border:1px solid var(--brd);border-radius:20px;padding:34px;max-width:380px;width:100%;backdrop-filter:blur(14px)}
+.lcard h1{font-size:1.5rem;margin-bottom:4px}.lcard p{color:var(--muted);font-size:.9rem;margin-bottom:18px}
+.lock{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,var(--accent),var(--danger));display:grid;place-items:center;margin-bottom:16px;font-size:1.6rem}
+input{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--brd);border-radius:12px;padding:12px 14px;color:var(--txt);margin-top:10px;font-size:.95rem;outline:none}
+input:focus{border-color:var(--accent)}
+.btn{border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;font-family:inherit;font-size:.9rem;transition:.15s}
+.btn:hover{transform:translateY(-1px)}
+.btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;width:100%;margin-top:16px;justify-content:center}
+.btn.danger{background:var(--danger);color:#fff}
+.btn.warn{background:var(--warn);color:#1a1200}
+.btn.ghost{background:rgba(255,255,255,.06);color:var(--txt);border:1px solid var(--brd)}
+.hide{display:none!important}
+/* dashboard */
+header{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--brd);position:sticky;top:0;background:rgba(7,7,15,.8);backdrop-filter:blur(12px);z-index:5}
+header h1{font-size:1.15rem;display:flex;align-items:center;gap:8px}
+.hlogo{display:grid;place-items:center}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 10px var(--ok);animation:pulse 1.5s infinite}
+@keyframes pulse{50%{opacity:.4}}
+.spacer{margin-left:auto}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0}
+@media(max-width:700px){.kpis{grid-template-columns:repeat(2,1fr)}}
+.kpi{position:relative;background:linear-gradient(160deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border:1px solid var(--brd);border-radius:18px;padding:18px 18px 16px;overflow:hidden;transition:.2s}
+.kpi:hover{transform:translateY(-3px);border-color:rgba(124,92,255,.45)}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.kpi b{font-family:Sora;font-size:2rem;display:block;line-height:1;background:linear-gradient(90deg,#fff,#c9c4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.kpi span{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;font-weight:600;margin-top:7px;display:block}
+.kpi.live::before{background:linear-gradient(90deg,var(--ok),var(--accent2))}
+.kpi.live b{background:linear-gradient(90deg,#7CFFB2,#34d36b);-webkit-background-clip:text;background-clip:text;color:transparent}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.panel{background:linear-gradient(160deg,rgba(255,255,255,.045),rgba(255,255,255,.015));border:1px solid var(--brd);
+  border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 8px 30px rgba(0,0,0,.18)}
+.panel h2{font-size:1.05rem;margin-bottom:14px;display:flex;align-items:center;gap:9px;padding-left:11px;position:relative}
+.panel h2::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:3px;border-radius:3px;background:linear-gradient(180deg,var(--accent),var(--accent2))}
+.danger-zone h2::before{background:var(--danger)}
+.feed{max-height:340px;overflow:auto;display:flex;flex-direction:column;gap:7px}
+.feed::-webkit-scrollbar{width:7px}.feed::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:9px}
+.row{display:flex;gap:10px;align-items:center;font-size:.85rem;padding:10px 11px;border-radius:11px;
+  background:rgba(255,255,255,.03);border:1px solid transparent;transition:.15s}
+.row:hover{background:rgba(255,255,255,.06);border-color:var(--brd)}
+.row .who{font-weight:600}.row .meta{color:var(--muted);margin-left:auto;font-size:.75rem}
+.pill{font-size:.68rem;padding:3px 9px;border-radius:999px;background:rgba(124,92,255,.2);color:#b6a4ff;font-weight:700;white-space:nowrap}
+.pill.click{background:rgba(25,227,199,.18);color:var(--accent2)}
+.pill.view{background:rgba(255,177,59,.18);color:var(--warn)}
+.pill.presence{background:rgba(52,211,107,.18);color:var(--ok)}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{text-align:left;padding:11px 9px;border-bottom:1px solid var(--brd)}
+th{color:var(--muted);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.04em}
+tbody tr{transition:.12s}tbody tr:hover{background:rgba(255,255,255,.035)}
+.danger-zone{border-color:rgba(255,77,109,.4)}
+.danger-zone h2{color:var(--danger)}
+.muted{color:var(--muted);font-size:.85rem}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input,select{font-family:inherit}
+@media(max-width:560px){.wrap{padding:14px}.kpi b{font-size:1.55rem}input,select{font-size:16px}}
+</style>  <link rel="stylesheet" href="assets/ayush-premium.css">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login" id="loginView">
+  <form class="lcard" id="loginForm">
+    <div class="lock">🔐</div>
+    <h1>Owner Console</h1>
+    <p>Restricted. Authorized access only.</p>
+    <input id="ou" placeholder="Owner ID" autocomplete="off">
+    <input id="op" type="password" placeholder="Secret password">
+    <input id="oc" inputmode="numeric" maxlength="6" placeholder="2FA code (if enabled)" autocomplete="off">
+    <button class="btn primary" type="submit">Enter dashboard</button>
+    <p class="muted" id="loginErr" style="color:var(--danger);margin-top:12px"></p>
+  </form>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashView" class="hide">
+  <header>
+    <span class="hlogo"><svg viewBox="0 0 64 64" width="26" height="26"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#19e3c7"/></linearGradient></defs><path d="M32 3 56 12v18c0 16-11 27-24 31C19 57 8 46 8 30V12z" fill="url(#lg)"/><path d="M34 18 24 34h7l-1 12 11-16h-7z" fill="#fff"/></svg></span>
+    <h1>ThreatQuest Cyber Hunt <span style="color:var(--muted);font-weight:600;font-size:.9rem">Owner Console</span></h1>
+    <span class="dot" style="margin-left:4px"></span>
+    <div class="spacer"></div>
+    <span class="muted" id="updated"></span>
+    <button class="btn ghost" id="logoutBtn">Sign out</button>
+  </header>
+  <div class="wrap">
+    <div class="kpis">
+      <div class="kpi live"><b id="k-live">0</b><span>Live now</span></div>
+      <div class="kpi"><b id="k-users">0</b><span>Total users</span></div>
+      <div class="kpi"><b id="k-saves">0</b><span>Saves</span></div>
+      <div class="kpi"><b id="k-events">0</b><span>Events archived</span></div>
+    </div>
+    <div class="kpis" style="margin-top:10px">
+      <div class="kpi" style="border-color:rgba(127,29,29,.5)"><b id="k-threats" style="color:#fca5a5">0</b><span>Attacks blocked (total)</span></div>
+      <div class="kpi" style="border-color:rgba(127,29,29,.5)"><b id="k-threats-today" style="color:#fca5a5">0</b><span>Attacks today</span></div>
+      <div class="kpi"><b id="k-blocked">0</b><span>Blocked IPs</span></div>
+      <div class="kpi"><b id="k-banned">0</b><span>Banned users</span></div>
+    </div>
+    <p class="muted" id="threatBreakdown" style="font-size:.8rem;margin:6px 2px 0"></p>
+
+    <div class="grid2">
+      <div class="panel">
+        <h2><span class="dot"></span>Live users <span class="muted" id="liveCount"></span></h2>
+        <div class="feed" id="liveList"></div>
+      </div>
+      <div class="panel">
+        <h2>⚡ Live activity (clicks &amp; views)</h2>
+        <div class="feed" id="activityList"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>👥 All users</h2>
+      <div style="overflow:auto"><table id="usersTbl">
+        <thead><tr><th>Name</th><th>Email</th><th>College</th><th>Year</th><th>Last seen</th><th></th></tr></thead>
+        <tbody></tbody></table></div>
+    </div>
+
+    <div class="panel">
+      <h2>🛡️ Blocked IPs</h2>
+      <div class="feed" id="blockedList"></div>
+      <div class="controls" style="margin-top:12px">
+        <input id="manualIp" placeholder="Block an IP manually (e.g. 49.36.x.x)" style="max-width:280px">
+        <button class="btn danger" id="manualBlockBtn">Block IP</button>
+        <button class="btn warn" id="clearBlocksBtn">Clear ALL IP blocks</button>
+        <span class="muted" style="font-size:.78rem">Use if you or real students get caught by a shared mobile IP.</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>🚫 Banned users <span class="muted" style="font-size:.8rem">(unban if it was a false positive)</span></h2>
+      <div class="feed" id="bannedList"></div>
+    </div>
+
+    <div class="panel">
+      <h2>➕ Add events <span class="muted" style="font-size:.8rem">(hackathons & community — appears live on the site)</span></h2>
+      <div class="controls" style="flex-wrap:wrap;gap:8px">
+        <select id="ce_kind" style="min-width:130px">
+          <option value="hackathon">🏆 Hackathon</option>
+          <option value="community">🎟️ Community/Conf</option>
+        </select>
+        <input id="ce_title" placeholder="Event title *" style="min-width:220px">
+        <input id="ce_organizer" placeholder="Organizer / company" style="min-width:160px">
+        <select id="ce_type" style="min-width:130px">
+          <option>Hackathon</option><option>Ideathon</option><option>Hiring Challenge</option>
+          <option>Government</option><option>Conference</option><option>Meetup</option><option>Summit</option><option>Workshop</option>
+        </select>
+        <input id="ce_city" placeholder="City / location" style="min-width:120px">
+        <select id="ce_mode" style="min-width:110px"><option>Online</option><option>Offline</option><option>Hybrid</option></select>
+      </div>
+      <div class="controls" style="flex-wrap:wrap;gap:8px;margin-top:8px">
+        <label class="muted" style="font-size:.75rem">Start <input id="ce_starts" type="date"></label>
+        <label class="muted" style="font-size:.75rem">End <input id="ce_ends" type="date"></label>
+        <label class="muted" style="font-size:.75rem">Deadline <input id="ce_deadline" type="date"></label>
+        <input id="ce_prize" placeholder="Prize (e.g. ₹1,00,000)" style="min-width:150px">
+        <input id="ce_price" placeholder="Price (Free / ₹999)" style="min-width:130px">
+      </div>
+      <div class="controls" style="flex-wrap:wrap;gap:8px;margin-top:8px">
+        <input id="ce_url" placeholder="Apply / event URL (https://...) *" style="min-width:260px">
+        <input id="ce_tags" placeholder="Tags, comma separated (AI, Web3...)" style="min-width:200px">
+        <label class="muted" style="font-size:.8rem;display:flex;align-items:center;gap:6px"><input id="ce_featured" type="checkbox" style="width:auto"> ⭐ Featured</label>
+        <button class="btn" id="ce_addBtn" style="background:#16a34a;color:#fff">+ Add event</button>
+      </div>
+      <p class="muted" id="ce_msg" style="font-size:.78rem;margin:8px 0 0"></p>
+      <div class="feed" id="ce_list" style="margin-top:12px"></div>
+    </div>
+
+    <div class="panel">
+      <h2>🎓 Campus Ambassadors <span class="muted" style="font-size:.8rem">(referrals — watch for sudden spikes = possible fake signups)</span></h2>
+      <div style="overflow:auto"><table id="ambTbl">
+        <thead><tr><th>#</th><th>Name</th><th>College</th><th>Code</th><th>Tier</th><th>Sign-ups</th></tr></thead>
+        <tbody></tbody></table></div>
+    </div>
+
+    <div class="panel">
+      <h2>🚨 Auto-defense threat log <span class="muted" style="font-size:.8rem">(attacks blocked automatically)</span></h2>
+      <div class="feed" id="threatList"></div>
+    </div>
+
+    <div class="panel danger-zone">
+      <h2>⚠️ Danger zone — site controls</h2>
+      <div class="controls">
+        <button class="btn warn" id="maintBtn">Loading…</button>
+        <span class="muted">Maintenance freezes the public site for all users.</span>
+      </div>
+      <div class="controls" style="margin-top:14px">
+        <button class="btn danger" id="wipeBtn">Wipe ALL user data</button>
+        <span class="muted">Deletes every account, save, team post &amp; analytics. Irreversible.</span>
+      </div>
+    </div>
+    <p class="muted" style="text-align:center;margin:20px 0">ThreatQuest Cyber Hunt Owner Console · auto-refreshes every 3s</p>
+  </div>
+</div>
+
+<script>
+const BASE = (location.port==="5050"||location.protocol==="http:"||location.protocol==="https:")?"":"http://localhost:5050";
+let TOKEN = sessionStorage.getItem("hh_owner_token")||"";
+const $=s=>document.querySelector(s);
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function fmtTime(ts){try{return new Date(ts*1000).toLocaleTimeString();}catch(e){return"";}}
+function ago(ts){const s=Math.round(Date.now()/1000-ts);return s<60?s+"s":Math.round(s/60)+"m";}
+
+async function login(u,p,code){
+  const r=await fetch(BASE+"/api/owner/login",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({user:u,pass:p,code})});
+  const d=await r.json();
+  if(d.ok){TOKEN=d.token;sessionStorage.setItem("hh_owner_token",TOKEN);showDash();}
+  else if(r.status===429)$("#loginErr").textContent="Too many attempts. Locked for ~15 min.";
+  else if(d.need_2fa)$("#loginErr").textContent="Enter your 6-digit 2FA code.";
+  else $("#loginErr").textContent="Invalid credentials.";
+}
+$("#loginForm").onsubmit=e=>{e.preventDefault();login($("#ou").value.trim(),$("#op").value,$("#oc").value.trim());};
+$("#logoutBtn").onclick=()=>{sessionStorage.removeItem("hh_owner_token");location.reload();};
+
+function showDash(){$("#loginView").classList.add("hide");$("#dashView").classList.remove("hide");poll();loadCommunity();}
+
+async function poll(){
+  if(!TOKEN)return;
+  try{
+    const r=await fetch(BASE+"/api/owner/overview",{headers:{"X-Owner-Token":TOKEN}});
+    if(r.status===401){sessionStorage.removeItem("hh_owner_token");location.reload();return;}
+    const d=await r.json();
+    $("#k-live").textContent=d.live.length;
+    $("#k-users").textContent=d.stats.users;
+    $("#k-saves").textContent=d.stats.saves;
+    $("#k-events").textContent=d.stats.events_archived;
+    // security summary cards
+    const ts=d.threat_stats||{};
+    $("#k-threats").textContent=ts.total||0;
+    $("#k-threats-today").textContent=ts.today||0;
+    $("#k-blocked").textContent=ts.blocked_ips||0;
+    $("#k-banned").textContent=ts.banned_users||0;
+    const bk=ts.by_kind||{};const parts=Object.keys(bk).map(k=>`${esc(k)}: ${bk[k]}`);
+    $("#threatBreakdown").textContent=parts.length?("Attack types — "+parts.join(" · ")):"No attacks detected yet. ✅";
+    $("#liveCount").textContent="("+d.live.length+")";
+    $("#updated").textContent="updated "+new Date().toLocaleTimeString();
+    // live
+    $("#liveList").innerHTML=d.live.length?d.live.map(u=>{const g=u.geo||{};const loc=[g.city,g.country].filter(Boolean).join(", ");
+      return `<div class="row">
+      <span class="who">${esc(u.name||"Guest")}</span>
+      <span class="pill presence">${esc(u.path||"—")}</span>
+      <span class="meta">${esc(u.email||"anon")} · ${esc(u.ip||"?")}${loc?" · 📍"+esc(loc):""} · ${ago(u.last_seen)} ago</span>
+      ${u.ip?`<button class="btn danger" style="padding:4px 8px;font-size:.7rem" data-blockip="${esc(u.ip)}">Block IP</button>`:""}</div>`;}).join(""):'<p class="muted">No one online right now.</p>';
+    // activity
+    $("#activityList").innerHTML=d.activity.length?d.activity.map(a=>`<div class="row">
+      <span class="pill ${esc((a.kind||"").replace(/[^a-z]/gi,""))}">${esc(a.kind)}</span>
+      <span class="who">${esc(a.name||"Guest")}</span>
+      <span>${esc((a.detail||a.path||"").slice(0,46))}</span>
+      <span class="meta">${fmtTime(a.ts)}</span></div>`).join(""):'<p class="muted">No activity yet.</p>';
+    // users
+    $("#usersTbl tbody").innerHTML=d.users.map(u=>`<tr>
+      <td>${esc(u.name||"—")}</td><td>${esc(u.email||"—")}</td><td>${esc(u.college||"—")}</td><td>${esc(u.year||"—")}</td>
+      <td class="muted">${u.last_seen?ago(u.last_seen)+" ago":"—"}</td>
+      <td style="white-space:nowrap">
+        <button class="btn ghost" style="padding:5px 9px" data-del="${esc(u.email)}">Delete</button>
+        <button class="btn danger" style="padding:5px 9px" data-ban="${esc(u.email)}">Ban + Block IP</button>
+      </td></tr>`).join("")
+      ||'<tr><td colspan="6" class="muted">No users yet.</td></tr>';
+    $("#usersTbl").querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>delUser(b.dataset.del));
+    $("#usersTbl").querySelectorAll("[data-ban]").forEach(b=>b.onclick=()=>banUser(b.dataset.ban));
+    $("#liveList").querySelectorAll("[data-blockip]").forEach(b=>b.onclick=()=>blockIp(b.dataset.blockip));
+    // blocked IPs
+    $("#blockedList").innerHTML=(d.blocked_ips||[]).length?d.blocked_ips.map(b=>{const g=b.geo||{};const loc=[g.city,g.country].filter(Boolean).join(", ");
+      return `<div class="row">
+      <span class="who">${esc(b.ip)}</span><span class="meta">${esc(b.reason||"")}${loc?" · 📍"+esc(loc):""}</span>
+      <button class="btn ghost" style="padding:4px 8px;font-size:.7rem" data-unblock="${esc(b.ip)}">Unblock</button></div>`;}).join(""):'<p class="muted">No blocked IPs.</p>';
+    $("#blockedList").querySelectorAll("[data-unblock]").forEach(b=>b.onclick=()=>unblockIp(b.dataset.unblock));
+    // banned users (with unban)
+    $("#bannedList").innerHTML=(d.banned_users||[]).length?d.banned_users.map(b=>`<div class="row">
+      <span class="who">${esc(b.email)}</span><span class="meta">${esc(b.reason||"")}</span>
+      <button class="btn" style="padding:4px 8px;font-size:.7rem;background:#16a34a;color:#fff" data-unban="${esc(b.email)}">Unban</button></div>`).join(""):'<p class="muted">No banned users.</p>';
+    $("#bannedList").querySelectorAll("[data-unban]").forEach(b=>b.onclick=()=>unbanUser(b.dataset.unban));
+    // campus ambassadors
+    $("#ambTbl tbody").innerHTML=(d.ambassadors||[]).length?d.ambassadors.map(a=>`<tr>
+      <td>${a.rank}</td><td>${esc(a.name)}</td><td class="muted">${esc(a.college||"—")}</td>
+      <td style="font-family:monospace">${esc(a.code)}</td><td>${esc(a.tier)}</td><td><b>${a.count}</b></td></tr>`).join(""):'<tr><td colspan="6" class="muted">No ambassadors yet.</td></tr>';
+    // threat log (auto-defense) with severity colours
+    const sevColor={critical:["#7f1d1d","#fecaca"],high:["#9a3412","#fed7aa"],medium:["#854d0e","#fde68a"]};
+    $("#threatList").innerHTML=(d.threats||[]).length?d.threats.map(t=>{const c=sevColor[t.severity]||["#374151","#e5e7eb"];
+      return `<div class="row">
+      <span class="pill" style="background:${c[0]};color:${c[1]}">${esc(t.severity||"?")}</span>
+      <span class="pill" style="background:#1f2937;color:#cbd5e1">${esc(t.kind||"threat")}</span>
+      <span class="who">${esc(t.ip||"?")}</span>
+      <span class="meta">${esc((t.email||"anon"))}${t.country?" · 📍"+esc(t.country):""} · ${esc((t.action||"logged"))}</span>
+      <span style="flex:1;min-width:0;color:#fca5a5;font-family:monospace;font-size:.72rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc((t.detail||t.path||"").slice(0,70))}</span>
+      <span class="meta">${fmtTime(t.ts)}</span></div>`;}).join(""):'<p class="muted">No attacks detected. ✅ All clear.</p>';
+    // maintenance button
+    const m=$("#maintBtn");m.dataset.on=d.maintenance?"1":"0";
+    m.textContent=d.maintenance?"🔴 Site is DOWN — bring it back":"🟢 Site is LIVE — take it down";
+    m.className="btn "+(d.maintenance?"danger":"warn");
+  }catch(e){}
+}
+setInterval(poll,3000);
+
+function ownerPost(path,body){return fetch(BASE+path,{method:"POST",headers:{"Content-Type":"application/json","X-Owner-Token":TOKEN},body:JSON.stringify(body||{})});}
+async function delUser(email){
+  if(!confirm("Delete user "+email+" and all their data?"))return;
+  await ownerPost("/api/owner/delete-user",{email});poll();
+}
+async function banUser(email){
+  if(!confirm("Ban "+email+"? This deletes their data, blocks re-signup, AND blocks their last IP."))return;
+  await ownerPost("/api/owner/ban-user",{email,block_ip:true});poll();
+}
+async function blockIp(ip){
+  if(!confirm("Block IP "+ip+"? They lose all access to the site."))return;
+  await ownerPost("/api/owner/block-ip",{ip,reason:"manual"});poll();
+}
+async function unblockIp(ip){await ownerPost("/api/owner/unblock-ip",{ip});poll();}
+async function unbanUser(email){
+  if(!confirm("Unban "+email+"? They'll be able to sign in again."))return;
+  await ownerPost("/api/owner/unban-user",{email});poll();
+}
+
+// ---- community events admin ----
+async function loadCommunity(){
+  if(!TOKEN)return;
+  try{
+    const r=await fetch(BASE+"/api/owner/community/list",{headers:{"X-Owner-Token":TOKEN}});
+    const d=await r.json();renderCommunity(d.events||[]);
+  }catch(e){}
+}
+function renderCommunity(list){
+  const el=$("#ce_list");
+  el.innerHTML=list.length?list.map(e=>`<div class="row">
+    <span class="pill" style="background:${(e.kind==='hackathon')?'#1e3a8a':'#3730a3'};color:#dbeafe">${e.kind==='hackathon'?'🏆 Hack':'🎟️ Comm'}</span>
+    ${e.featured?'<span class="pill" style="background:#854d0e;color:#fde68a">⭐</span>':''}
+    <span class="who">${esc(e.title)}</span>
+    <span class="meta">${esc(e.type||"")} · ${esc(e.city||"online")} · ${esc(e.starts||"TBA")}${e.ends&&e.ends!==e.starts?"→"+esc(e.ends):""}</span>
+    <span class="meta">${esc(e.prize||e.price||"")}</span>
+    <button class="btn ghost" style="padding:4px 8px;font-size:.7rem" data-cedel="${esc(e.id)}">Delete</button></div>`).join(""):'<p class="muted">No owner-added events yet. (Curated + scraped events still show on the site.)</p>';
+  el.querySelectorAll("[data-cedel]").forEach(b=>b.onclick=()=>delCommunity(b.dataset.cedel));
+}
+async function addCommunity(){
+  const title=$("#ce_title").value.trim();
+  if(!title){$("#ce_msg").textContent="Title is required.";return;}
+  const body={
+    kind:$("#ce_kind").value, title, organizer:$("#ce_organizer").value.trim(),
+    type:$("#ce_type").value, category:$("#ce_type").value,
+    city:$("#ce_city").value.trim(), mode:$("#ce_mode").value,
+    starts:$("#ce_starts").value, ends:$("#ce_ends").value, deadline:$("#ce_deadline").value,
+    prize:$("#ce_prize").value.trim(), price:$("#ce_price").value.trim(),
+    url:$("#ce_url").value.trim(), ticket_url:$("#ce_url").value.trim(),
+    tags:$("#ce_tags").value.split(",").map(s=>s.trim()).filter(Boolean),
+    featured:$("#ce_featured").checked, dates_confirmed:true
+  };
+  const r=await ownerPost("/api/owner/community/add",body);const d=await r.json();
+  if(d.ok){
+    $("#ce_msg").textContent="✅ Added — it's live on the site now.";
+    ["ce_title","ce_organizer","ce_city","ce_prize","ce_price","ce_url","ce_tags","ce_starts","ce_ends","ce_deadline"].forEach(id=>$("#"+id).value="");
+    $("#ce_featured").checked=false;
+    renderCommunity(d.events||[]);
+  }else $("#ce_msg").textContent="Could not add event.";
+}
+async function delCommunity(id){
+  if(!confirm("Remove this event from the site?"))return;
+  const r=await ownerPost("/api/owner/community/delete",{id});const d=await r.json();
+  renderCommunity(d.events||[]);
+}
+async function clearBlocks(){
+  if(!confirm("Lift ALL IP blocks? (Account bans stay.) Use this if you or real students got caught by a shared mobile IP."))return;
+  const r=await ownerPost("/api/owner/clear-blocks",{});const d=await r.json();
+  if(d.ok){alert("Cleared "+d.cleared+" IP block(s).");poll();}
+}
+document.addEventListener("click",e=>{
+  if(e.target.id==="manualBlockBtn"){const ip=$("#manualIp").value.trim();if(ip)blockIp(ip);}
+  if(e.target.id==="clearBlocksBtn")clearBlocks();
+  if(e.target.id==="ce_addBtn")addCommunity();
+});
+$("#maintBtn").onclick=async()=>{
+  const on=$("#maintBtn").dataset.on!=="1";
+  if(on&&!confirm("Take the WHOLE site down for all users?"))return;
+  await fetch(BASE+"/api/owner/maintenance",{method:"POST",headers:{"Content-Type":"application/json","X-Owner-Token":TOKEN},body:JSON.stringify({on})});
+  poll();
+};
+$("#wipeBtn").onclick=async()=>{
+  if(!confirm("⚠️ This deletes ALL users, saves, team posts and analytics. Type-safe? This cannot be undone."))return;
+  if(!confirm("Are you absolutely sure? Final confirmation."))return;
+  await fetch(BASE+"/api/owner/wipe",{method:"POST",headers:{"X-Owner-Token":TOKEN}});
+  poll();
+};
+
+// auto-enter if already authed this session
+if(TOKEN) showDash();
+</script>
+  <script src="assets/ayush-premium.js"></script>
+</body></html>
