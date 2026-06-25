@@ -1,4 +1,10 @@
 """
+ThreatQuest Cyber Hunt™
+Copyright © 2026 Ayush Anand. All rights reserved.
+
+Unauthorized rebranding, redistribution, or republication is prohibited.
+"""
+"""
 ThreatQuest Cyber Hunt India — aggregation backend.
 
 Run:  python app.py   (serves API + the frontend at http://localhost:5050)
